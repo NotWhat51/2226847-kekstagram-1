@@ -1,8 +1,9 @@
 //https://learn.javascript.ru/task/random-int-min-max
-const randomInt = (min, max) => {
-    //получаем случайное число от min до max+1
-    let random = min + Math.random() * (max - min +1 );
-    return Math.floor(random);
+const getRandomPositiveInteger = (a, b) => {
+    const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
+    const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
+    const result = Math.random() * (upper - lower + 1) + lower;
+    return Math.floor(result);
 }
 
 const isMaxLengthStr = (str, maxLength) => {
