@@ -99,4 +99,10 @@ const createPublication = function() {
     }
 }
 
-const Publication = Array.from({ lenght: POSTS }, createPublication);
+const publication = Array.from({ lenght: POSTS }, createPublication);
+
+const test = function() {
+    return 0;
+}
+
+test(publication);
