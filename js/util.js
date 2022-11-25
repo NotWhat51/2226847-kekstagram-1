@@ -13,4 +13,4 @@ const getRandomIndex = function (array) {
     return getRandomPositiveInteger(0, array.length - 1);
 }
 
-export {getRandomPositiveInteger, getRandomIndex, checkStringLength}
+export { getRandomPositiveInteger, getRandomIndex, checkStringLength }
