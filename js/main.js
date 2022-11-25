@@ -1,3 +1,5 @@
 import { createPublication } from "./data.js";
+import { renderPicture} from "./render.js";
 
-createPublication();
+const posts = createPublication();
+renderPicture(posts);

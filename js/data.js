@@ -88,4 +88,4 @@ const createPublication = () => {
 
 const setOfPublication =()=> Array.from({ lenght: POSTS }, createPublication);
 
-export {createPublication};
+export { createPublication };
