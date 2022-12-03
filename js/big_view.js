@@ -29,7 +29,7 @@ const openBigPicture = (post) => {
 
     bigPicture.querySelector('.big-picture__img').querySelector('img').src = post.url;
     bigPicture.querySelector('.likes-count').textContent = post.likes;
-    bigPicture.querySelector('.comment-count').textContent = post.comments.length;
+    bigPicture.querySelector('.comment-count').textContent = post.comments.lenght;
     bigPicture.querySelector('.social__caption').textContent = post.description;
 
     const socialComments = bigPicture.querySelector('.social__comments');
