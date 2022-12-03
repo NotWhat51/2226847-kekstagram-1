@@ -15,7 +15,6 @@ for (const post of posts) {
 
     picture.addEventListener('click', (evt) => {
         evt.preventDefault();
-        document.body.classList.add('modal-open');
         openBigPicture(post);
     })
 }

@@ -13,4 +13,6 @@ const getRandomIndex = function (array) {
     return getRandomPositiveInteger(0, array.length - 1);
 }
 
-export { getRandomPositiveInteger, getRandomIndex, checkStringLength }
+const isEsc = (evt) => evt.key === 'Escape';
+
+export { getRandomPositiveInteger, getRandomIndex, checkStringLength, isEsc }

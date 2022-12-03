@@ -1,14 +1,35 @@
+import { isEsc } from "./util.js";
+
 const bigPicture = document.querySelector('.big-picture');
 
-const openBigPicture= (post) => {
+const cancel = bigPicture.querySelector('.big-picture__cancel');
+
+const closeBigPicture = () => {
+    bigPicture.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    document.removeEventListener('keydown', escClose);
+}
+
+const escClose = (evt) => {
+    if (isEsc(evt)) {
+        evt.preventDefault();
+        closeBigPicture();
+    }
+}
+
+const openBigPicture = (post) => {
+    document.body.classList.add('modal-open');
     bigPicture.classList.remove('hidden');
+
+    cancel.addEventListener('click', () => closeBigPicture());
+    document.addEventListener('keydown', escClose);
 
     bigPicture.querySelector('.social__comment-count').classList.add('hidden');
     bigPicture.querySelector('.comments-loader').classList.add('hidden');
 
     bigPicture.querySelector('.big-picture__img').querySelector('img').src = post.url;
     bigPicture.querySelector('.likes-count').textContent = post.likes;
-    bigPicture.querySelector('.comment-count').textContent = post.comments.length;
+    bigPicture.querySelector('.comment-count').textContent = post.comments.lenght;
     bigPicture.querySelector('.social__caption').textContent = post.description;
 
     const socialComments = bigPicture.querySelector('.social__comments');

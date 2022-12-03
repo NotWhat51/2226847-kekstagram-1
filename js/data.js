@@ -1,4 +1,4 @@
-import { getRandomIndex, getRandomPositiveInteger } from './ujtil.js';
+import { getRandomIndex, getRandomPositiveInteger } from './util.js';
 
 //подписи к фото в стиле Скриптонита, ахахах
 const DESCRIPTIONS = [
@@ -60,7 +60,7 @@ const getRandomId = (idArray) => {
 const createComment = () => {
     return {
         id: getRandomId(idNames),
-        avatar: 'img/avatar-${getRandomPositiveInteger(1, 6)}.svg',
+        avatar: `img/avatar-${getRandomPositiveInteger(1, 6)}.svg`,
         message: MESSAGES[getRandomIndex(MESSAGES)],
         name: NAMES[getRandomIndex(NAMES)]
     }
@@ -79,13 +79,13 @@ const setOfComments = () => {
 const createPublication = () => {
     return {
         id: getRandomId(idData),
-        url: 'photos/${getRandomId(urlData, 1, 25)}.jpg',
+        url: `photos/${getRandomId(urlData, 1, 25)}.jpg`,
         description: DESCRIPTIONS[getRandomIndex(DESCRIPTIONS)],
         likes: getRandomPositiveInteger(13, 169),
         comments: setOfComments()
     }
 }
 
-const setOfPublication =()=> Array.from({ lenght: POSTS }, createPublication);
+const setOfPublication =()=> Array.from({ length: POSTS }, createPublication);
 
 export { setOfPublication };
