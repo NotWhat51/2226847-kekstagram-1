@@ -1,4 +1,4 @@
-import { getRandomIndex, getRandomPositiveInteger } from './ujtil.js';
+import { getRandomIndex, getRandomPositiveInteger } from './util.js';
 
 //подписи к фото в стиле Скриптонита, ахахах
 const DESCRIPTIONS = [
@@ -86,6 +86,6 @@ const createPublication = () => {
     }
 }
 
-const setOfPublication =()=> Array.from({ lenght: POSTS }, createPublication);
+const setOfPublication =()=> Array.from({ length: POSTS }, createPublication);
 
 export { setOfPublication };

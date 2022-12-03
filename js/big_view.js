@@ -1,7 +1,28 @@
+import { isEsc } from "./util.js";
+
 const bigPicture = document.querySelector('.big-picture');
 
-const openBigPicture= (post) => {
+const cancel = bigPicture.querySelector('.big-picture__cancel');
+
+const closeBigPicture = () => {
+    bigPicture.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    document.removeEventListener('keydown', escClose);
+}
+
+const escClose = (evt) => {
+    if (isEsc(evt)) {
+        evt.preventDefault();
+        closeBigPicture();
+    }
+}
+
+const openBigPicture = (post) => {
+    document.body.classList.add('modal-open');
     bigPicture.classList.remove('hidden');
+
+    cancel.addEventListener('click', () => closeBigPicture());
+    document.addEventListener('keydown', escClose);
 
     bigPicture.querySelector('.social__comment-count').classList.add('hidden');
     bigPicture.querySelector('.comments-loader').classList.add('hidden');
