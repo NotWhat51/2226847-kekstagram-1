@@ -1,8 +1,13 @@
-import { isEsc } from "./util";
+import { isEsc } from "./util.js";
 
 const uploadFile = document.querySelector('#upload-file');
 const imgOverlay = document.querySelector('.img-upload__overrlay');
 const cancel = document.querySelector('#upload-cancel');
+
+const form = document.querySelector('.img-upload__form');
+const hashtags = form.querySelector('.text__hashtags');
+const description = form.querySelector('.text__description');
+const submitButton = form.querySelector('.img-upload__submit');
 
 const closeImageOverlay = () => {
     uploadFile.value = '';
@@ -22,16 +27,12 @@ uploadFile.addEventListener('change', (evt) => {
 })
 
 const overlayEsc = (evt) => {
-    if (isEsc(evt)) {
+    if (isEsc(evt) && evt.target !== hashtags && evt.target !== description) {
         evt.preventDefault();
         closeImageOverlay();
     }
 }
 
-const form = document.querySelector('.img-upload__form');
-const hashtags = form.querySelector('.text__hashtags');
-const description = form.querySelector('.text__description');
-const submitButton = form.querySelector('.img-upload__submit');
 
 let hashtagBool = true;
 let commentBool = true;
@@ -57,7 +58,7 @@ const hashtagRegx = /(^#[A-Za-zА-Яа-яЁё0-9]{1,19}$)|(^\s*$)/
 
 const isHashtag = (value) => hashtagRegx.test(text);
 
-const hashtagValidation = (value) => {
+const hashtagValidator = (value) => {
     const hashtags = value.split(' ');
     const bool = hashtags.every(isHashtag);
     hashtagBool = bool;
@@ -67,22 +68,22 @@ const hashtagValidation = (value) => {
 
 const isComment = (value) => value.length < 140;
 
-const commentValidation = (value) => {
+const commentValidator = (value) => {
     const bool = isComment(value);
     commentBool = bool;
     ctrlSubmit();
     return bool;
 }
 
-pristine.addValidation(
+pristine.addValidator(
     hashtags,
-    hashtagValidation,
+    hashtagValidator,
     'Hashtag is incorrect'
 )
 
-pristine.addValidation(
+pristine.addValidator(
     description,
-    commentValidation,
+    commentValidator,
     'Comment length is more then 140 symbols'
 )
 

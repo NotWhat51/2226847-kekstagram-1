@@ -68,7 +68,7 @@ const createComment = () => {
 
 
 const setOfComments = () => {
-    const n = getRandomPositiveInteger(1, 5);
+    const n = getRandomPositiveInteger(1, 6);
     const array = Array(n);
     for (let i = 0; i < n; i++) {
         array[i] = createComment();
