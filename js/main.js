@@ -1,6 +1,7 @@
 import { setOfPublication } from "./data.js";
 import { renderPicture} from "./render.js";
-import { openBigPicture, bigPicture } from "./big_view.js";
+import { openBigPicture } from "./big_view.js";
+import './upload_image.js';
 
 const posts = setOfPublication();
 
@@ -10,25 +11,15 @@ for (const post of posts) {
 
 const pictures = document.querySelector('.pictures');
 
-for (const post of posts) {
-    const picture= pictures.querySelector(`img[src="${post.url}"]`).parentNode;
-
+const addCheckHandler = (post) => {
+    const imgSrc = `img[src="${post.url}"]`;
+    const picture = pictures.querySelector(imgSrc).parentNode;
     picture.addEventListener('click', (evt) => {
         evt.preventDefault();
         openBigPicture(post);
     })
 }
 
-const cancel = bigPicture.querySelector('.big-picture__cancel');
-
-cancel.addEventListener('click', () => {
-    bigPicture.classList.add('hidden');
-    document.body.classList.remove('modal-open');
-})
-
-document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-        bigPicture.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-})
+for (const post of posts) {
+    addCheckHandler(post);
+}
