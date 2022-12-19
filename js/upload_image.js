@@ -218,7 +218,7 @@ const ctrlSubmit = () => {
 
 const hashtagRegx = /(^#[A-Za-zА-Яа-яЁё0-9]{1,19}$)|(^\s*$)/;
 
-const isHashtag = (value) => hashtagRegx.test(text);
+const isHashtag = (value) => hashtagRegx.test(value);
 
 const hashtagValidator = (value) => {
     const hashtags = value.split(' ');

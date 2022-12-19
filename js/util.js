@@ -1,18 +1,3 @@
-const getRandomPositiveInteger = (a, b) => {
-    const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
-    const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
-    const result = Math.random() * (upper - lower + 1) + lower;
-    return Math.floor(result);
-}
-
-const checkStringLength = (string, maxLength) => {
-    return string.length <= maxLength;
-}
-
-const getRandomIndex = function (array) {
-    return getRandomPositiveInteger(0, array.length - 1);
-}
-
 const isEsc = (evt) => evt.key === 'Escape';
 
 const showWarning = (message, timeWarning) => {
@@ -39,4 +24,13 @@ const showWarning = (message, timeWarning) => {
     };
 };
 
-export { getRandomPositiveInteger, getRandomIndex, checkStringLength, isEsc, showWarning }
+function  debounce (callback, timeoutDelay = 500) {
+    let timeoutId;
+    return (...rest) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => 
+        callback.apply(this, rest), timeoutDelay);
+    };
+}
+
+export { isEsc, showWarning, debounce }
