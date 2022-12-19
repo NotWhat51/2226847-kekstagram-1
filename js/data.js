@@ -53,9 +53,9 @@ const getRandomId = (idArray) => {
         if (idArray[i] == 0) {
             idArray[i] = 1;
             return i + 1;
-        }
-    }
-}
+        };
+    };
+};
 
 const createComment = () => {
     return {
@@ -63,8 +63,8 @@ const createComment = () => {
         avatar: `img/avatar-${getRandomPositiveInteger(1, 6)}.svg`,
         message: MESSAGES[getRandomIndex(MESSAGES)],
         name: NAMES[getRandomIndex(NAMES)]
-    }
-}
+    };
+};
 
 
 const setOfComments = () => {
@@ -72,9 +72,9 @@ const setOfComments = () => {
     const array = Array(n);
     for (let i = 0; i < n; i++) {
         array[i] = createComment();
-    }
+    };
     return array;
-}
+};
 
 const createPublication = () => {
     return {
@@ -83,8 +83,8 @@ const createPublication = () => {
         description: DESCRIPTIONS[getRandomIndex(DESCRIPTIONS)],
         likes: getRandomPositiveInteger(13, 169),
         comments: setOfComments()
-    }
-}
+    };
+};
 
 const setOfPublication =()=> Array.from({ length: POSTS }, createPublication);
 

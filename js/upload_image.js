@@ -1,4 +1,5 @@
 import { isEsc } from "./util.js";
+import { sendData } from "./api.js";
 
 const uploadFile = document.querySelector('#upload-file');
 const imgOverlay = document.querySelector('.img-upload__overlay');
@@ -17,8 +18,14 @@ const imgPreview = imgOverlay.querySelector('.img-upload__preview');
 const effectsList = imgOverlay.querySelector('.effects__list');
 const effectSlider = imgOverlay.querySelector('.effect-level__slider');
 const effectValue = imgOverlay.querySelector('.effect-level__value');
-const effectLevel = imgOverlay.querySelector('img-upload__effect-level');
+const effectLevel = imgOverlay.querySelector('.img-upload__effect-level');
 let checkBox;
+
+const body = document.querySelector('body');
+const successSubmit = document.querySelector('#success').content.querySelector('.success');
+const errorSubmit = document.querySelector('#error').content.querySelector('.error');
+const successButton = successSubmit.querySelector('.success__button');
+const errorButton = errorSubmit.querySelector('.error__button');
 
 const closeImageOverlay = () => {
     uploadFile.value = '';
@@ -38,14 +45,15 @@ const closeImageOverlay = () => {
 
     effectsList.removeEventListener('change', effectPicture);
     effectSlider.noUiSlider.destroy();
-}
+};
 
 const overlayEsc = (evt) => {
-    if (isEsc(evt) && evt.target !== hashtags && evt.target !== description) {
+    if (isEsc(evt) && evt.target !== hashtags && evt.target !== description
+        && !body.contains(errorSubmit)) {
         evt.preventDefault();
         closeImageOverlay();
-    }
-}
+    };
+};
 
 const scaleChange = (evt) => {
     const value = scaleValue.value.replace('%', '');
@@ -55,8 +63,8 @@ const scaleChange = (evt) => {
     } else if (evt.target === scaleBigger && value < 100) {
         scaleValue.value = `${parseInt(value, 10) + 25}%`;
         imgPreview.style.transform = `scale(${(parseInt(value, 10) + 25) / 100})`;
-    }
-}
+    };
+};
 
 const effectPicture = (evt) => {
     checkBox = evt.target.id;
@@ -100,7 +108,7 @@ const effectPicture = (evt) => {
             start = 3;
             step = 0.1;
             break;  
-    }
+    };
 
     effectSlider.noUiSlider.updateOptions({
         range: {
@@ -109,20 +117,20 @@ const effectPicture = (evt) => {
         },
         start: start,
         spet: step
-    })
+    });
 
     if (evt.target.id !== 'effect-none') {
         effectLevel.classList.remove('hidden');
     } else {
         effectLevel.classList.add('hidden');
-    }
+    };
 
     imgPreview.className = 'img-upload__preview';
     const effectPreview = evt.target.parentNode.querySelector('.effects__preview');
     imgPreview.classList.add(effectPreview.getAttribute('class').split('  ')[1]);
-}
+};
 
-const effectRate = ()=> {
+const effectRate = () => {
     const value = effectSlider.noUiSlider.get();
     effectValue.value = value;
     let filter;
@@ -147,14 +155,14 @@ const effectRate = ()=> {
         case 'effect-heat':
             filter = `brightness(${value})`;
             break;
-    }
+    };
 
     if (checkBox === 'effect-none') {
         imgPreview.style.filter = '';
     } else {
         imgPreview.style.filter = filter;
-    }
-}
+    };
+};
 
 uploadFile.addEventListener('change', (evt) => {
     document.addEventListener('keydown', overlayEsc);
@@ -171,22 +179,22 @@ uploadFile.addEventListener('change', (evt) => {
     checkBox = 'effect-none';
     imgPreview.className = 'img-upload__preview';
     effectLevel.classList.add('hidden');
-    noUiSlider.create(slider, {
+    noUiSlider.create(effectSlider, {
         range: {
             min: 0,
-            max: 100
+            max: 100,
         },
         start: 100
     });
     effectSlider.noUiSlider.on('update', () => {
         effectRate();
-    })
+    });
 
     evt.preventDefault();
     form.addEventListener('submit', submitListener);
     document.body.classList.add('modal-open');
     imgOverlay.classList.remove('hidden');
-})
+});
 
 let hashtagBool = true;
 let commentBool = true;
@@ -205,10 +213,10 @@ const ctrlSubmit = () => {
         submitButton.setAttribute('disabled', 'true');
     } else {
         submitButton.removeAttribute('disabled', 'true');
-    }
-}
+    };
+};
 
-const hashtagRegx = /(^#[A-Za-zА-Яа-яЁё0-9]{1,19}$)|(^\s*$)/
+const hashtagRegx = /(^#[A-Za-zА-Яа-яЁё0-9]{1,19}$)|(^\s*$)/;
 
 const isHashtag = (value) => hashtagRegx.test(text);
 
@@ -218,7 +226,7 @@ const hashtagValidator = (value) => {
     hashtagBool = bool;
     ctrlSubmit();
     return bool;
-}
+};
 
 const isComment = (value) => value.length < 140;
 
@@ -227,21 +235,91 @@ const commentValidator = (value) => {
     commentBool = bool;
     ctrlSubmit();
     return bool;
-}
+};
 
 pristine.addValidator(
     hashtags,
     hashtagValidator,
     'Hashtag is incorrect'
-)
+);
 
 pristine.addValidator(
     description,
     commentValidator,
     'Comment length is more then 140 symbols'
-)
+);
+
+const submitButtonBlock = () => {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Publishing...';
+};
+
+const submitButtonUnblock = () => {
+    submitButton.disabled = false;
+    submitButton.textContent = 'Publish';
+};
+
+const closeMessages = () => {
+    document.removeEventListener('keydown', escMessage);
+
+    if (body.contains(successSubmit)) {
+        body.removeChild(successSubmit);
+        document.removeEventListener('click', closeSuccessMessage);
+        successButton.removeEventListener('click', closeMessages);
+    };
+
+    if (body.contains(errorSubmit)) {
+        errorButton.removeEventListener('click', closeMessages);
+        document.removeEventListener('click', closeErrorMessage);
+        imgOverlay.classList.remove('hidden');
+        body.removeChild(errorSubmit);
+    };
+};
+
+const escMessage = (evt) => {
+    if (isEsc(evt)) {
+        closeMessages();
+    };
+};
+
+const closeSuccessMessage = (evt) => {
+    if (evt.target === successSubmit) {
+        closeMessages();
+    };
+};
+
+const closeErrorMessage = (evt) => {
+    if (evt.target === errorSubmit) {
+        closeMessages();
+    };
+};
 
 const submitListener = (evt) => {
     evt.preventDefault();
-    pristine.validate();
-}
+    const isValidate = pristine.validate();
+
+    if (isValidate) {
+        submitButtonBlock();
+        sendData(
+            () => {
+                closeImageOverlay();
+                submitButtonUnblock();
+                successButton.addEventListener('click', closeMessages);
+                document.addEventListener('keydown', escMessage);
+                document.addEventListener('click', closeSuccessMessage);
+                body.appendChild(successSubmit);
+            },
+            () => {
+                imgOverlay.classList.add('hidden');
+                submitButtonUnblock();
+                errorButton.addEventListener('click', closeMessages);
+                document.addEventListener('keydown', escMessage);
+                document.addEventListener('click', closeErrorMessage);
+                body.appendChild(errorSubmit);
+            },
+            new FormData(evt.target)
+        );
+    };
+};
+
+export { closeImageOverlay };
