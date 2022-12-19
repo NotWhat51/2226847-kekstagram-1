@@ -48,10 +48,10 @@ const renderPostsFromServer = (posts) => {
   for (const post of posts){
     allPosts.add(post);
   }
-
+  debugger
   const imgFilters = document.querySelector('.img-filters');
   imgFilters.classList.remove('.img-filters--inactive');
-  const filtersForm = document.querySelector('.ing.filters__form');
+  const filtersForm = document.querySelector('.img-filters__form');
   let currentFilter = 'filter-default';
   let timeoutId;
 

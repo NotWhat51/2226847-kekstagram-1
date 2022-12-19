@@ -9,21 +9,6 @@ const socialComments = bigPicture.querySelector('.social__comments');
 let counter = 0;
 let comments;
 
-const closeBigPicture = () => {
-  bigPicture.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', escClose);
-  cancel.removeEventListener('click', closeBigPicture);
-  commentsLoader.removeEventListener('click', moreCommentsLoader);
-};
-
-const escClose = (evt) => {
-  if (isEsc(evt)) {
-    evt.preventDefault();
-    closeBigPicture();
-  }
-};
-
 const commentConstructor = (comment) => {
   const li = document.createElement('li');
   li.classList.add('social__comment');
@@ -36,15 +21,14 @@ const commentConstructor = (comment) => {
 
   const p = document.createElement('p');
   p.classList.add('social__text');
-  p.textContent = comment.messange;
+  p.textContent = comment.message;
   li.appendChild(p);
 
   return li;
 };
-
 const moreCommentsLoader = () => {
   for (let i = counter; i < counter + 5; i++) {
-    const counterStr= ` из ${comments.lenght} комментариев`;
+    const counterStr= ` из ${comments.length} комментариев`;
     if (i === comments.length - 1) {
       commentsLoader.classList.add('hidden');
     }
@@ -55,6 +39,21 @@ const moreCommentsLoader = () => {
     commentCounter.textContent = `${i+1}${counterStr}`;
   }
   counter += 5;
+};
+
+const escClose = (evt) => {
+  if (isEsc(evt)) {
+    evt.preventDefault();
+    closeBigPicture();
+  }
+};
+
+const closeBigPicture = () => {
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', escClose);
+  cancel.removeEventListener('click', closeBigPicture);
+  commentsLoader.removeEventListener('click', moreCommentsLoader);
 };
 
 const openBigPicture = (post) => {
@@ -83,7 +82,7 @@ const openBigPicture = (post) => {
   }
 
   let numberComments;
-  const counterStr= ` из ${comments.lenght} комментариев`;
+  const counterStr= ` из ${comments.length} комментариев`;
   if (comments.length < 6) {
     numberComments = comments.length;
     commentCounter.textContent = `${comments.length}${counterStr}`;

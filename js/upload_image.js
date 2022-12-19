@@ -44,7 +44,7 @@ const resetValues = () => {
   for (const error of errors) {
     error.textContent = '';
   }
-  slider.noUiSlider.destroy();
+  effectSlider.noUiSlider.destroy();
 };
 
 const closeImageOverlay = () => {
@@ -53,7 +53,7 @@ const closeImageOverlay = () => {
   document.removeEventListener('keydown', overlayEsc);
   cancel.removeEventListener('click', closeImageOverlay);
 
-    submitButton.removeAttribute('disabled', 'true');
+  submitButton.removeAttribute('disabled', 'true');
   form.removeEventListener('submit', submitListener);
 
   scaleBigger.removeEventListener('click', scaleChange);
@@ -238,8 +238,8 @@ const hashtagRegx = /(^#[A-Za-zА-Яа-яЁё0-9]{1,19}$)|(^\s*$)/;
 const isHashtag = (value) => hashtagRegx.test(value);
 
 const hashtagValidator = (value) => {
-  const hashtags = value.split(' ');
-  const bool = hashtags.every(isHashtag);
+  const hashtagsValid = value.split(' ');
+  const bool = hashtagsValid.every(isHashtag);
   hashtagBool = bool;
   ctrlSubmit();
   return bool;

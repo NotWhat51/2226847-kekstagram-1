@@ -7,7 +7,7 @@ fileType.addEventListener('change', () => {
   const file = fileType.files[0];
   const fileName = file.name.toLowerCase();
 
-  const match = TYPES.some((it) => fileName.endWith(it));
+  const match = TYPES.some((it) => fileName.endsWith(it));
 
   if (match) {
     const link = URL.createObjectURL(file);
