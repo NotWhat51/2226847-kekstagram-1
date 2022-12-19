@@ -1,9 +1,14 @@
-import { setOfPublication } from "./data.js";
 import { renderPicture} from "./render.js";
+import { getData } from "./api.js";
+import { showWarning } from "./util.js";
 import './upload_image.js';
 
-const posts = setOfPublication();
-
-for (const post of posts) {
-    renderPicture(post);
-}
+getData((posts) => {
+        for (const post of posts) {
+            renderPicture(post);
+        };
+    },
+    () => {
+        showWarning('Failed to load data. Try to reload the page', 0);
+    }
+);

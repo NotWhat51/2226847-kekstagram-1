@@ -17,7 +17,7 @@ const renderPicture = (post) => {
         evt.preventDefault();
         clonePicture.blur();
         openBigPicture(post);
-    })
-}
+    });
+};
 
 export { renderPicture };
