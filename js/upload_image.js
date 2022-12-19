@@ -18,7 +18,7 @@ const imgPreview = imgOverlay.querySelector('.img-upload__preview');
 const effectsList = imgOverlay.querySelector('.effects__list');
 const effectSlider = imgOverlay.querySelector('.effect-level__slider');
 const effectValue = imgOverlay.querySelector('.effect-level__value');
-const effectLevel = imgOverlay.querySelector('img-upload__effect-level');
+const effectLevel = imgOverlay.querySelector('.img-upload__effect-level');
 let checkBox;
 
 const body = document.querySelector('body');
@@ -179,10 +179,10 @@ uploadFile.addEventListener('change', (evt) => {
     checkBox = 'effect-none';
     imgPreview.className = 'img-upload__preview';
     effectLevel.classList.add('hidden');
-    noUiSlider.create(slider, {
+    noUiSlider.create(effectSlider, {
         range: {
             min: 0,
-            max: 100
+            max: 100,
         },
         start: 100
     });

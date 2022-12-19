@@ -61,7 +61,7 @@ const openBigPicture = (post) => {
     bigPicture.classList.remove('hidden');
 
     document.body.classList.add('modal-open');
-    cancel.addEventListener('click', closeBigPicture());
+    cancel.addEventListener('click', closeBigPicture);
     document.addEventListener('keydown', escClose);
 
     bigPicture.querySelector('.big-picture__img').querySelector('img').src = post.url;
