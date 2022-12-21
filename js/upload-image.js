@@ -32,6 +32,8 @@ const setValues = () => {
   effectLevel.classList.add('hidden');
   scaleValue.value = `${100}%`;
   imgPreview.style.transform = `scale(${1})`;
+  imgPreview.className = 'effects__preview--none';
+  effectsList.children[0].querySelector('input').checked = true;
 };
 
 const resetValues = () => {
@@ -139,21 +141,33 @@ const pristine = new Pristine(form, {
 }, true);
 
 const ctrlSubmit = () => {
-  if (!hashtagBool || !commentBool) {
-    submitButton.setAttribute('disabled', 'true');
+  if (hashtagBool && commentBool) {
+    submitButton.disabled = false;
   } else {
-    submitButton.removeAttribute('disabled', 'true');
+    submitButton.disabled = true;
   }
 };
 
-const hashtagRegx = /(^#[A-Za-zА-Яа-яЁё0-9]{1,19}$)|(^\s*$)/;
+const hashtagRegx = /(^\s*$)|(^#[A-Za-zА-Яа-яЁё0-9]{1,19}$)/;
 
 const isHashtag = (value) => hashtagRegx.test(value);
 
 const hashtagValidator = (value) => {
   const hashtagsValid = value.split(' ');
-  const bool = hashtagsValid.every(isHashtag);
-  hashtagBool = bool;
+  if (hashtagsValid.length > 5){
+    return false;
+  }
+  const hashtagSet = new Set();
+  for (const hashtag of hashtagsValid) {
+    hashtagSet.add(hashtag.toLowerCase());
+  }
+  if (hashtagSet.length !== hashtagsValid.length) {
+    return false;
+  }
+  for (const hashtag of hashtagsValid) {
+    if (!isHashtag(hashtag)) { break; }
+  }
+  hashtagBool = true;
   ctrlSubmit();
   return bool;
 };
@@ -231,7 +245,7 @@ function effectPicture (evt) {
       max = 1;
       start = 1;
       step = 0.1;
-      effectClass = 'effects__preview--none';
+      effectClass = 'effects__preview--chrome';
       break;
 
     case 'effect-sepia':
@@ -239,7 +253,7 @@ function effectPicture (evt) {
       max = 1;
       start = 1;
       step = 0.1;
-      effectClass = 'effects__preview--chrome';
+      effectClass = 'effects__preview--sepia';
       break;
 
     case 'effect-marvin':
@@ -247,7 +261,7 @@ function effectPicture (evt) {
       max = 100;
       start = 100;
       step = 1;
-      effectClass = 'effects__preview--sepia';
+      effectClass = 'effects__preview--marvin';
       break;
 
     case 'effect-phobos':
@@ -255,7 +269,7 @@ function effectPicture (evt) {
       max = 3;
       start = 3;
       step = 0.1;
-      effectClass = 'effects__preview--marvin';
+      effectClass = 'effects__preview--phobos';
       break;
 
     case 'effect-heat':
