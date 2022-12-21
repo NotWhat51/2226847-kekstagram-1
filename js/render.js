@@ -1,4 +1,6 @@
-import { openBigPicture } from './big_view.js';
+import { openBigPicture } from './big-view.js';
+
+const DELAY = 500;
 
 const pictureTemplate = document.querySelector('#picture').content;
 const windowPictures = document.querySelector('.pictures');
@@ -8,8 +10,6 @@ const buttonDefault = document.querySelector('[id=filter-default]');
 const buttonRandom = document.querySelector('[id=filter-random]');
 const buttonDiscussed = document.querySelector('[id=filter-discussed]');
 const lastPosts = new Set();
-
-const DELAY = 500;
 
 const renderPicture = (post) => {
   const clonePicture = picture.cloneNode(true);
@@ -49,7 +49,7 @@ const renderPostsFromServer = (posts) => {
     allPosts.add(post);
   }
   const imgFilters = document.querySelector('.img-filters');
-  imgFilters.classList.remove('.img-filters--inactive');
+  imgFilters.classList.remove('img-filters--inactive');
   const filtersForm = document.querySelector('.img-filters__form');
   let currentFilter = 'filter-default';
   let timeoutId;

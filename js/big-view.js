@@ -49,13 +49,6 @@ const closeBigPicture = () => {
   commentsLoader.removeEventListener('click', moreCommentsLoader);
 };
 
-function escClose (evt) {
-  if (isEsc(evt)) {
-    evt.preventDefault();
-    closeBigPicture();
-  }
-}
-
 const openBigPicture = (post) => {
   bigPicture.classList.remove('hidden');
 
@@ -96,5 +89,12 @@ const openBigPicture = (post) => {
     counter = i + 1;
   }
 };
+
+function escClose (evt) {
+  if (isEsc(evt)) {
+    evt.preventDefault();
+    closeBigPicture();
+  }
+}
 
 export { openBigPicture };

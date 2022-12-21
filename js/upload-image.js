@@ -49,7 +49,7 @@ const resetValues = () => {
 
 const closeImageOverlay = () => {
   imgOverlay.classList.add('hidden');
-  document.body.classList.add('modal-open');
+  document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', overlayEsc);
   cancel.removeEventListener('click', closeImageOverlay);
 
@@ -62,93 +62,6 @@ const closeImageOverlay = () => {
   effectsList.removeEventListener('change', effectPicture);
   resetValues();
 };
-
-function overlayEsc (evt) {
-  if (isEsc(evt) && evt.target !== hashtags && evt.target !== description
-    && !body.contains(errorSubmit)) {
-    evt.preventDefault();
-    closeImageOverlay();
-  }
-}
-
-function scaleChange (evt) {
-  const value = scaleValue.value.replace('%', '');
-  if (evt.target === scaleSmaller && value > 25) {
-    scaleValue.value = `${parseInt(value, 10) - 25}%`;
-    imgPreview.style.transform = `scale(${(parseInt(value, 10) - 25) / 100})`;
-  } else if (evt.target === scaleBigger && value < 100) {
-    scaleValue.value = `${parseInt(value, 10) + 25}%`;
-    imgPreview.style.transform = `scale(${(parseInt(value, 10) + 25) / 100})`;
-  }
-}
-
-function effectPicture (evt) {
-  checkBox = evt.target.id;
-  let min = 0;
-  let max = 100;
-  let start = 100;
-  let step = 1;
-  let effectClass;
-
-  switch(checkBox) {
-    case 'effect-chrome':
-      min = 0;
-      max = 1;
-      start = 1;
-      step = 0.1;
-      effectClass = 'effects__preview--none';
-      break;
-
-    case 'effect-sepia':
-      min = 0;
-      max = 1;
-      start = 1;
-      step = 0.1;
-      effectClass = 'effects__preview--chrome';
-      break;
-
-    case 'effect-marvin':
-      min = 0;
-      max = 100;
-      start = 100;
-      step = 1;
-      effectClass = 'effects__preview--sepia';
-      break;
-
-    case 'effect-phobos':
-      min = 0;
-      max = 3;
-      start = 3;
-      step = 0.1;
-      effectClass = 'effects__preview--marvin';
-      break;
-
-    case 'effect-heat':
-      min = 0;
-      max = 3;
-      start = 3;
-      step = 0.1;
-      effectClass = 'effects__preview--heat';
-      break;
-  }
-
-  effectSlider.noUiSlider.updateOptions({
-    range: {
-      min: min,
-      max: max
-    },
-    start: start,
-    spet: step
-  });
-
-  if (evt.target.id !== 'effect-none') {
-    effectLevel.classList.remove('hidden');
-  } else {
-    effectLevel.classList.add('hidden');
-  }
-
-  imgPreview.className = effectClass;
-}
 
 const effectRate = () => {
   const value = effectSlider.noUiSlider.get();
@@ -245,7 +158,7 @@ const hashtagValidator = (value) => {
   return bool;
 };
 
-const isComment = (value) => value.length < 140;
+const isComment = (value) => value.length <= 140;
 
 const commentValidator = (value) => {
   const bool = isComment(value);
@@ -292,6 +205,93 @@ const closeMessages = () => {
     body.removeChild(errorSubmit);
   }
 };
+
+function scaleChange (evt) {
+  const value = scaleValue.value.replace('%', '');
+  if (evt.target === scaleSmaller && value > 25) {
+    scaleValue.value = `${parseInt(value, 10) - 25}%`;
+    imgPreview.style.transform = `scale(${(parseInt(value, 10) - 25) / 100})`;
+  } else if (evt.target === scaleBigger && value < 100) {
+    scaleValue.value = `${parseInt(value, 10) + 25}%`;
+    imgPreview.style.transform = `scale(${(parseInt(value, 10) + 25) / 100})`;
+  }
+}
+
+function effectPicture (evt) {
+  checkBox = evt.target.id;
+  let min = 0;
+  let max = 100;
+  let start = 100;
+  let step = 1;
+  let effectClass;
+
+  switch(checkBox) {
+    case 'effect-chrome':
+      min = 0;
+      max = 1;
+      start = 1;
+      step = 0.1;
+      effectClass = 'effects__preview--none';
+      break;
+
+    case 'effect-sepia':
+      min = 0;
+      max = 1;
+      start = 1;
+      step = 0.1;
+      effectClass = 'effects__preview--chrome';
+      break;
+
+    case 'effect-marvin':
+      min = 0;
+      max = 100;
+      start = 100;
+      step = 1;
+      effectClass = 'effects__preview--sepia';
+      break;
+
+    case 'effect-phobos':
+      min = 0;
+      max = 3;
+      start = 3;
+      step = 0.1;
+      effectClass = 'effects__preview--marvin';
+      break;
+
+    case 'effect-heat':
+      min = 0;
+      max = 3;
+      start = 3;
+      step = 0.1;
+      effectClass = 'effects__preview--heat';
+      break;
+  }
+
+  effectSlider.noUiSlider.updateOptions({
+    range: {
+      min: min,
+      max: max
+    },
+    start: start,
+    spet: step
+  });
+
+  if (evt.target.id !== 'effect-none') {
+    effectLevel.classList.remove('hidden');
+  } else {
+    effectLevel.classList.add('hidden');
+  }
+
+  imgPreview.className = effectClass;
+}
+
+function overlayEsc (evt) {
+  if (isEsc(evt) && evt.target !== hashtags && evt.target !== description
+    && !body.contains(errorSubmit)) {
+    evt.preventDefault();
+    closeImageOverlay();
+  }
+}
 
 function escMessage (evt) {
   if (isEsc(evt)) {
