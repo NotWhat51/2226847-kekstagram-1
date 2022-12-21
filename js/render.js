@@ -48,7 +48,6 @@ const renderPostsFromServer = (posts) => {
   for (const post of posts){
     allPosts.add(post);
   }
-  debugger
   const imgFilters = document.querySelector('.img-filters');
   imgFilters.classList.remove('.img-filters--inactive');
   const filtersForm = document.querySelector('.img-filters__form');

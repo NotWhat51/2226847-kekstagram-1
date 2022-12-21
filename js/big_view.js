@@ -41,13 +41,6 @@ const moreCommentsLoader = () => {
   counter += 5;
 };
 
-const escClose = (evt) => {
-  if (isEsc(evt)) {
-    evt.preventDefault();
-    closeBigPicture();
-  }
-};
-
 const closeBigPicture = () => {
   bigPicture.classList.add('hidden');
   document.body.classList.remove('modal-open');
@@ -55,6 +48,13 @@ const closeBigPicture = () => {
   cancel.removeEventListener('click', closeBigPicture);
   commentsLoader.removeEventListener('click', moreCommentsLoader);
 };
+
+function escClose (evt) {
+  if (isEsc(evt)) {
+    evt.preventDefault();
+    closeBigPicture();
+  }
+}
 
 const openBigPicture = (post) => {
   bigPicture.classList.remove('hidden');

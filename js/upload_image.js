@@ -63,15 +63,15 @@ const closeImageOverlay = () => {
   resetValues();
 };
 
-const overlayEsc = (evt) => {
+function overlayEsc (evt) {
   if (isEsc(evt) && evt.target !== hashtags && evt.target !== description
     && !body.contains(errorSubmit)) {
     evt.preventDefault();
     closeImageOverlay();
   }
-};
+}
 
-const scaleChange = (evt) => {
+function scaleChange (evt) {
   const value = scaleValue.value.replace('%', '');
   if (evt.target === scaleSmaller && value > 25) {
     scaleValue.value = `${parseInt(value, 10) - 25}%`;
@@ -80,9 +80,9 @@ const scaleChange = (evt) => {
     scaleValue.value = `${parseInt(value, 10) + 25}%`;
     imgPreview.style.transform = `scale(${(parseInt(value, 10) + 25) / 100})`;
   }
-};
+}
 
-const effectPicture = (evt) => {
+function effectPicture (evt) {
   checkBox = evt.target.id;
   let min = 0;
   let max = 100;
@@ -148,7 +148,7 @@ const effectPicture = (evt) => {
   }
 
   imgPreview.className = effectClass;
-};
+}
 
 const effectRate = () => {
   const value = effectSlider.noUiSlider.get();
@@ -293,25 +293,25 @@ const closeMessages = () => {
   }
 };
 
-const escMessage = (evt) => {
+function escMessage (evt) {
   if (isEsc(evt)) {
     closeMessages();
   }
-};
+}
 
-const closeSuccessMessage = (evt) => {
+function closeSuccessMessage (evt) {
   if (evt.target === successSubmit) {
     closeMessages();
   }
-};
+}
 
-const closeErrorMessage = (evt) => {
+function closeErrorMessage (evt) {
   if (evt.target === errorSubmit) {
     closeMessages();
   }
-};
+}
 
-const submitListener = (evt) => {
+function submitListener (evt) {
   evt.preventDefault();
   const isValidate = pristine.validate();
 
@@ -337,6 +337,6 @@ const submitListener = (evt) => {
       new FormData(evt.target)
     );
   }
-};
+}
 
 export { closeImageOverlay };
