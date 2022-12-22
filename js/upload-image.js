@@ -1,5 +1,11 @@
-import { isEsc } from './util.js';
+import { isEsc, checkForRepeats } from './util.js';
 import { sendData } from './api.js';
+
+const MAX_HASHTAG_LENGTH = 20;
+const MAX_HASHTAG_COUNT = 5;
+const MAX_COMMENT_LENGTH = 140;
+const hashtagRegx = /^#[A-Za-zА-Яа-я0-9]{1,19}$/;
+const errorCommentText = 'длина комментария не может составлять больше 140 символов';
 
 const Effects = {
   NONE: 'effect-none',
@@ -17,6 +23,16 @@ const PreviewEffects = {
   MARVIN: 'effects__preview--marvin',
   PHOBOS: 'effects__preview--phobos',
   HEAT: 'effects__preview--heat'
+};
+
+const HashtagError = {
+  OK: '',
+  BEGIN_HASHTAG: 'хэш-тег начинается c символа #',
+  ONLY_HASHTAG: 'хеш-тег не может состоять только из одной решётки',
+  MAX_LENGTH: 'максимальная длина одного хэш-тега 20 символов, включая решётку',
+  MAX_COUNT: 'нельзя указать больше пяти хэш-тегов',
+  INCORRECT_SYMBOL: 'строка после решётки должна состоять из букв и чисел и не может содержать пробелы, спецсимволы (#, @, $ и т. п.), символы пунктуации (тире, дефис, запятая и т. п.), эмодзи и т. д.',
+  REPEAT: 'один и тот же хэш-тег не может быть использован дважды'
 };
 
 const uploadFile = document.querySelector('#upload-file');
@@ -161,8 +177,7 @@ const ctrlSubmit = () => {
   }
 };
 
-const hashtagRegx = /^#[A-Za-zА-Яа-я0-9]{1,19}$/;
-const errorHashtagText = '';
+let errorHashtagText = HashtagError.OK;
 
 const isHashtag = (value) => hashtagRegx.test(value);
 
@@ -172,28 +187,27 @@ const hashtagValidator = (value) => {
     for (const hashtag of hashtagsValid) {
       if (!isHashtag(hashtag)) {
         if (hashtag[0] !== '#') {
-          errorHashtagText = 'хэш-тег начинается c символа # (решётка)';
+          errorHashtagText = HashtagError.BEGIN_HASHTAG;
           return false;
         }
         if (hashtag.length === 1 && hashtag[0] === '#') {
-          errorHashtagText = 'хеш-тег не может состоять только из одной решётки';
+          errorHashtagText = HashtagError.ONLY_HASHTAG;
           return false;
         }
-        if (hashtag.length > 20) {
-          errorHashtagText = 'максимальная длина одного хэш-тега 20 символов, включая решётку';
+        if (hashtag.length > MAX_HASHTAG_LENGTH) {
+          errorHashtagText = HashtagError.MAX_LENGTH;
           return false;
         }
-        
-        errorHashtagText = 'строка после решётки должна состоять из букв и чисел и не может содержать пробелы, спецсимволы (#, @, $ и т. п.), символы пунктуации (тире, дефис, запятая и т. п.), эмодзи и т. д.'
+        errorHashtagText = HashtagError.INCORRECT_SYMBOL;
         return false;
       }
     }
     if (checkForRepeats(hashtagsValid)) {
-      errorHashtagText = 'один и тот же хэш-тег не может быть использован дважды';
+      errorHashtagText = HashtagError.REPEAT;
       return false;
     }
-    if (hashtagsValid.length > 5) {
-      errorHashtagText = 'нельзя указать больше пяти хэш-тегов';
+    if (hashtagsValid.length > MAX_HASHTAG_COUNT) {
+      errorHashtagText = HashtagError.MAX_COUNT;
       return false;
     }
   }
@@ -202,7 +216,7 @@ const hashtagValidator = (value) => {
   return true;
 };
 
-const isComment = (value) => value.length <= 140;
+const isComment = (value) => value.length <= MAX_COMMENT_LENGTH;
 
 const commentValidator = (value) => {
   commentBool = isComment(value);
@@ -219,17 +233,17 @@ pristine.addValidator(
 pristine.addValidator(
   description,
   commentValidator,
-  'Comment length is more then 140 symbols'
+  errorCommentText
 );
 
 const submitButtonBlock = () => {
   submitButton.disabled = true;
-  submitButton.textContent = 'Publishing...';
+  submitButton.textContent = 'Публикую...';
 };
 
 const submitButtonUnblock = () => {
   submitButton.disabled = false;
-  submitButton.textContent = 'Publish';
+  submitButton.textContent = 'Опубликовать';
 };
 
 const closeMessages = () => {

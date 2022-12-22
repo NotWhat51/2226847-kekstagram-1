@@ -1,5 +1,16 @@
 const isEsc = (evt) => evt.key === 'Escape';
 
+const checkForRepeats = (list) => {
+  const container = {};
+  for (const element of list) {
+    if (container[element]) {
+      return true;
+    }
+    container[element] = 1;
+  }
+  return false;
+};
+
 const showWarning = (message, timeWarning) => {
   const containerWarning = document.createElement('div');
 
@@ -33,4 +44,4 @@ function  debounce (callback, timeoutDelay = 500) {
   };
 }
 
-export { isEsc, showWarning, debounce };
+export { isEsc, checkForRepeats, showWarning, debounce };
