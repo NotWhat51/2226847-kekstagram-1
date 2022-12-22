@@ -182,38 +182,49 @@ let errorHashtagText = HashtagError.OK;
 const isHashtag = (value) => hashtagRegx.test(value);
 
 const hashtagValidator = (value) => {
+  hashtagBool = true;
+  errorHashtagText = HashtagError.OK;
+  let resultBool = true;
   const hashtagsValid = value.trim().toLowerCase().split(' ');
-  if (hashtagsValid[0] !== '') {
+    if (hashtagsValid[0] !== '') {
     for (const hashtag of hashtagsValid) {
       if (!isHashtag(hashtag)) {
         if (hashtag[0] !== '#') {
           errorHashtagText = HashtagError.BEGIN_HASHTAG;
-          return false;
+          hashtagBool = false;
+          resultBool = false;
+          break;
         }
         if (hashtag.length === 1 && hashtag[0] === '#') {
           errorHashtagText = HashtagError.ONLY_HASHTAG;
-          return false;
+          hashtagBool = false;
+          resultBool = false;
+          break;
         }
         if (hashtag.length > MAX_HASHTAG_LENGTH) {
           errorHashtagText = HashtagError.MAX_LENGTH;
-          return false;
+          hashtagBool = false;
+          resultBool = false;
+          break;
         }
         errorHashtagText = HashtagError.INCORRECT_SYMBOL;
-        return false;
+        hashtagBool = false;
+        resultBool = false;
       }
     }
     if (checkForRepeats(hashtagsValid)) {
       errorHashtagText = HashtagError.REPEAT;
-      return false;
+      hashtagBool = false;
+      resultBool = false;
     }
     if (hashtagsValid.length > MAX_HASHTAG_COUNT) {
       errorHashtagText = HashtagError.MAX_COUNT;
-      return false;
+      hashtagBool = false;
+      resultBool = false;
     }
   }
-  hashtagBool = true;
   ctrlSubmit();
-  return true;
+  return resultBool;
 };
 
 const isComment = (value) => value.length <= MAX_COMMENT_LENGTH;
@@ -224,10 +235,12 @@ const commentValidator = (value) => {
   return commentBool;
 };
 
+const generateErrorHashtagText = () => errorHashtagText;
+
 pristine.addValidator(
   hashtags,
   hashtagValidator,
-  errorHashtagText
+  generateErrorHashtagText
 );
 
 pristine.addValidator(
