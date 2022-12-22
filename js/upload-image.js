@@ -1,6 +1,24 @@
 import { isEsc } from './util.js';
 import { sendData } from './api.js';
 
+const Effects = {
+  NONE: 'effect-none',
+  CHROME: 'effect-chrome',
+  SEPIA: 'effect-sepia',
+  MARVIN: 'effect-marvin',
+  PHOBOS:'effect-phobos',
+  HEAT: 'effect-heat'
+};
+
+const PreviewEffects = {
+  NONE: 'effects__preview--none',
+  CHROME: 'effects__preview--chrome',
+  SEPIA: 'effects__preview--sepia',
+  MARVIN: 'effects__preview--marvin',
+  PHOBOS: 'effects__preview--phobos',
+  HEAT: 'effects__preview--heat'
+};
+
 const uploadFile = document.querySelector('#upload-file');
 const imgOverlay = document.querySelector('.img-upload__overlay');
 const cancel = document.querySelector('#upload-cancel');
@@ -28,11 +46,11 @@ const successButton = successSubmit.querySelector('.success__button');
 const errorButton = errorSubmit.querySelector('.error__button');
 
 const setValues = () => {
-  checkBox = 'effect-none';
+  checkBox = Effects.NONE;
   effectLevel.classList.add('hidden');
   scaleValue.value = `${100}%`;
   imgPreview.style.transform = `scale(${1})`;
-  imgPreview.className = 'effects__preview--none';
+  imgPreview.className = PreviewEffects.NONE;
   effectsList.children[0].querySelector('input').checked = true;
 };
 
@@ -56,7 +74,7 @@ const closeImageOverlay = () => {
   cancel.removeEventListener('click', closeImageOverlay);
 
   submitButton.removeAttribute('disabled', 'true');
-  form.removeEventListener('submit', submitListener);
+  form.removeEventListener('submit', onSubmitClick);
 
   scaleBigger.removeEventListener('click', scaleChange);
   scaleSmaller.removeEventListener('click', scaleChange);
@@ -71,32 +89,27 @@ const effectRate = () => {
   let filter;
 
   switch (checkBox) {
-    case 'effect-chrome':
+    case Effects.CHROME:
       filter = `grayscale(${value})`;
       break;
 
-    case 'effect-sepia':
+    case Effects.SEPIA:
       filter = `sepia(${value})`;
       break;
 
-    case 'effect-marvin':
+    case Effects.MARVIN:
       filter = `invert(${value}%)`;
       break;
 
-    case 'effect-phobos':
+    case Effects.PHOBOS:
       filter = `blur(${value}px)`;
       break;
 
-    case 'effect-heat':
+    case Effects.HEAT:
       filter = `brightness(${value})`;
       break;
   }
-
-  if (checkBox === 'effect-none') {
-    imgPreview.style.filter = '';
-  } else {
-    imgPreview.style.filter = filter;
-  }
+  imgPreview.style.filter = checkBox === Effects.NONE ? '' : filter;
 };
 
 uploadFile.addEventListener('change', (evt) => {
@@ -109,7 +122,7 @@ uploadFile.addEventListener('change', (evt) => {
   scaleSmaller.addEventListener('click', scaleChange);
   scaleBigger.addEventListener('click', scaleChange);
 
-  imgPreview.classList.add('effects__preview--none');
+  imgPreview.classList.add(PreviewEffects.NONE);
   effectsList.addEventListener('change', effectPicture);
 
   noUiSlider.create(effectSlider, {
@@ -123,7 +136,7 @@ uploadFile.addEventListener('change', (evt) => {
     effectRate();
   });
 
-  form.addEventListener('submit', submitListener);
+  form.addEventListener('submit', onSubmitClick);
   document.body.classList.add('modal-open');
   imgOverlay.classList.remove('hidden');
 });
@@ -148,43 +161,59 @@ const ctrlSubmit = () => {
   }
 };
 
-const hashtagRegx = /(^\s*$)|(^#[A-Za-zА-Яа-яЁё0-9]{1,19}$)/;
+const hashtagRegx = /^#[A-Za-zА-Яа-я0-9]{1,19}$/;
+const errorHashtagText = '';
 
 const isHashtag = (value) => hashtagRegx.test(value);
 
 const hashtagValidator = (value) => {
-  const hashtagsValid = value.split(' ');
-  if (hashtagsValid.length > 5){
-    return false;
-  }
-  const hashtagSet = new Set();
-  for (const hashtag of hashtagsValid) {
-    hashtagSet.add(hashtag.toLowerCase());
-  }
-  if (hashtagSet.length !== hashtagsValid.length) {
-    return false;
-  }
-  for (const hashtag of hashtagsValid) {
-    if (!isHashtag(hashtag)) { break; }
+  const hashtagsValid = value.trim().toLowerCase().split(' ');
+  if (hashtagsValid[0] !== '') {
+    for (const hashtag of hashtagsValid) {
+      if (!isHashtag(hashtag)) {
+        if (hashtag[0] !== '#') {
+          errorHashtagText = 'хэш-тег начинается c символа # (решётка)';
+          return false;
+        }
+        if (hashtag.length === 1 && hashtag[0] === '#') {
+          errorHashtagText = 'хеш-тег не может состоять только из одной решётки';
+          return false;
+        }
+        if (hashtag.length > 20) {
+          errorHashtagText = 'максимальная длина одного хэш-тега 20 символов, включая решётку';
+          return false;
+        }
+        
+        errorHashtagText = 'строка после решётки должна состоять из букв и чисел и не может содержать пробелы, спецсимволы (#, @, $ и т. п.), символы пунктуации (тире, дефис, запятая и т. п.), эмодзи и т. д.'
+        return false;
+      }
+    }
+    if (checkForRepeats(hashtagsValid)) {
+      errorHashtagText = 'один и тот же хэш-тег не может быть использован дважды';
+      return false;
+    }
+    if (hashtagsValid.length > 5) {
+      errorHashtagText = 'нельзя указать больше пяти хэш-тегов';
+      return false;
+    }
   }
   hashtagBool = true;
   ctrlSubmit();
-  return bool;
+  return true;
 };
 
 const isComment = (value) => value.length <= 140;
 
 const commentValidator = (value) => {
-  const bool = isComment(value);
-  commentBool = bool;
+  commentBool = isComment(value);
   ctrlSubmit();
-  return bool;
+  return commentBool;
 };
 
 pristine.addValidator(
   hashtags,
   hashtagValidator,
-  'Hashtag is incorrect'
+  errorHashtagText
 );
 
 pristine.addValidator(
@@ -204,7 +233,7 @@ const submitButtonUnblock = () => {
 };
 
 const closeMessages = () => {
-  document.removeEventListener('keydown', escMessage);
+  document.removeEventListener('keydown', escMessageClose);
 
   if (body.contains(successSubmit)) {
     body.removeChild(successSubmit);
@@ -240,44 +269,44 @@ function effectPicture (evt) {
   let effectClass;
 
   switch(checkBox) {
-    case 'effect-chrome':
+    case Effects.CHROME:
       min = 0;
       max = 1;
       start = 1;
       step = 0.1;
-      effectClass = 'effects__preview--chrome';
+      effectClass = PreviewEffects.CHROME;
       break;
 
-    case 'effect-sepia':
+    case Effects.SEPIA:
       min = 0;
       max = 1;
       start = 1;
       step = 0.1;
-      effectClass = 'effects__preview--sepia';
+      effectClass = PreviewEffects.SEPIA;
       break;
 
-    case 'effect-marvin':
+    case Effects.MARVIN:
       min = 0;
       max = 100;
       start = 100;
       step = 1;
-      effectClass = 'effects__preview--marvin';
+      effectClass = PreviewEffects.MARVIN;
       break;
 
-    case 'effect-phobos':
+    case Effects.PHOBOS:
       min = 0;
       max = 3;
       start = 3;
       step = 0.1;
-      effectClass = 'effects__preview--phobos';
+      effectClass = PreviewEffects.PHOBOS;
       break;
 
-    case 'effect-heat':
+    case Effects.HEAT:
       min = 0;
       max = 3;
       start = 3;
       step = 0.1;
-      effectClass = 'effects__preview--heat';
+      effectClass = PreviewEffects.HEAT;
       break;
   }
 
@@ -290,7 +319,7 @@ function effectPicture (evt) {
     spet: step
   });
 
-  if (evt.target.id !== 'effect-none') {
+  if (evt.target.id !== Effects.NONE) {
     effectLevel.classList.remove('hidden');
   } else {
     effectLevel.classList.add('hidden');
@@ -307,7 +336,7 @@ function overlayEsc (evt) {
   }
 }
 
-function escMessage (evt) {
+function escMessageClose (evt) {
   if (isEsc(evt)) {
     closeMessages();
   }
@@ -325,7 +354,7 @@ function closeErrorMessage (evt) {
   }
 }
 
-function submitListener (evt) {
+function onSubmitClick (evt) {
   evt.preventDefault();
   const isValidate = pristine.validate();
 
@@ -336,7 +365,7 @@ function submitListener (evt) {
         closeImageOverlay();
         submitButtonUnblock();
         successButton.addEventListener('click', closeMessages);
-        document.addEventListener('keydown', escMessage);
+        document.addEventListener('keydown', escMessageClose);
         document.addEventListener('click', closeSuccessMessage);
         body.appendChild(successSubmit);
       },
@@ -344,7 +373,7 @@ function submitListener (evt) {
         imgOverlay.classList.add('hidden');
         submitButtonUnblock();
         errorButton.addEventListener('click', closeMessages);
-        document.addEventListener('keydown', escMessage);
+        document.addEventListener('keydown', escMessageClose);
         document.addEventListener('click', closeErrorMessage);
         body.appendChild(errorSubmit);
       },

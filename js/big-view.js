@@ -26,6 +26,7 @@ const commentConstructor = (comment) => {
 
   return li;
 };
+
 const moreCommentsLoader = () => {
   for (let i = counter; i < counter + 5; i++) {
     const counterStr= ` из ${comments.length} комментариев`;

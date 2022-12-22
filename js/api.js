@@ -1,5 +1,10 @@
+const ServerLink = {
+  GET:  'https://26.javascript.pages.academy/kekstagram/data',
+  SEND: 'https://26.javascript.pages.academy/kekstagram'
+};
+
 const getData = (onSuccess, onFail) => {
-  fetch('https://26.javascript.pages.academy/kekstagram/data')
+  fetch(ServerLink.GET)
     .then((response) => response.json())
     .then((posts) => {
       onSuccess(posts);
@@ -10,7 +15,7 @@ const getData = (onSuccess, onFail) => {
 };
 
 const sendData = (onSuccess, onFail, body) => {
-  fetch('https://26.javascript.pages.academy/kekstagram',
+  fetch(ServerLink.SEND,
     {
       method: 'POST',
       body,
