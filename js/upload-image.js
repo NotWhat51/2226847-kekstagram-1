@@ -186,7 +186,7 @@ const hashtagValidator = (value) => {
   errorHashtagText = HashtagError.OK;
   let resultBool = true;
   const hashtagsValid = value.trim().toLowerCase().split(' ');
-    if (hashtagsValid[0] !== '') {
+  if (hashtagsValid[0] !== '') {
     for (const hashtag of hashtagsValid) {
       if (!isHashtag(hashtag)) {
         if (hashtag[0] !== '#') {
